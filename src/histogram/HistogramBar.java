@@ -20,33 +20,33 @@ import java.util.Random;
 public abstract class HistogramBar{
 	private String barName;
 	private int value;
-	private int xBar;
-	private int yBar;
-	private int widthBar;
-	private int heightBar;
+	private int x;
+	private int y;
+	private int width;
+	private int height;
 	private Color color;
 	
 	public HistogramBar(){
 		barName = new String();
 		value = 0;
-		xBar = 0;
-		yBar = 0;
-		widthBar = 0;
-		heightBar = 0;
+		setX(0);
+		setY(0);
+		setWidth(0);
+		setHeight(0);
 		Random rand = new Random();
 		float r = rand.nextFloat();
 		float g = rand.nextFloat();
 		float b = rand.nextFloat();	
-		color = new Color(r,g,b);		
+		color = new Color(r,g,b);	
 	}
 	
 	public HistogramBar(String n,int v,int x,int y,int width,int height){
 		barName = n;
 		value = v;
-		xBar = x;
-		yBar = y;
-		widthBar = width;
-		heightBar = height;
+		setX(x);
+		setY(y);
+		setWidth(width);
+		setHeight(height);
 		Random rand = new Random();
 		float r = rand.nextFloat();
 		float g = rand.nextFloat();
@@ -55,10 +55,10 @@ public abstract class HistogramBar{
 	}
 	
 	public HistogramBar(int x,int y,int width,int height,Color c){
-		xBar = x;
-		yBar = y;
-		widthBar = width;
-		heightBar = height;
+		setX(x);
+		setY(y);
+		setWidth(width);
+		setHeight(height);
 		color = c;
 	}
 	
@@ -78,20 +78,20 @@ public abstract class HistogramBar{
 		return value;
 	}
 	
-	public void setX(int x){
-		xBar = x;
+	public void setX(int n){
+		x = n;
 	}
 
-	public void setY(int y){
-		yBar = y;
+	public void setY(int n){
+		y = n;
 	}
 	
 	public void setWidth(int width){
-		widthBar = width;
+		this.width = width;
 	}
 	
 	public void setHeight(int height){
-		heightBar = height;
+		this.height = height;
 	}
 	
 	public void setColor(Color c){
@@ -108,6 +108,22 @@ public abstract class HistogramBar{
 		float g = rand.nextFloat();
 		float b = rand.nextFloat();	
 		color = new Color(r,g,b);
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 
 }

@@ -40,21 +40,38 @@ public class SimpleHistogramPanel extends JPanel{
 	private String histName;
 	Font defaultFont = new Font("Arial", Font.BOLD, 13);
 	private FontMetrics fm;
-
+	private ActionHighlightHBar ahhb;
+	private Graphics gr;
+	private ArrayList<HistogramBar> barsToMark;
+	
 	public SimpleHistogramPanel(){
+		super();
+		ahhb = new ActionHighlightHBar(this);
+		this.addMouseMotionListener(ahhb);
+		barsToMark = new ArrayList<HistogramBar>();
 	}
 
 	public SimpleHistogramPanel(int x,int y){
+		super();
 		this.setPreferredSize(new Dimension(x,y));
+		ahhb = new ActionHighlightHBar(this);
+		this.addMouseMotionListener(ahhb);
+		barsToMark = new ArrayList<HistogramBar>();
 	}
 	
 	public SimpleHistogramPanel(String name){
 		histName  = name;
+		ahhb = new ActionHighlightHBar(this);
+		this.addMouseMotionListener(ahhb);
+		barsToMark = new ArrayList<HistogramBar>();
 	}
 
 	public SimpleHistogramPanel(String name,int x,int y){
 		this.setPreferredSize(new Dimension(x,y));
 		histName  = name;
+		ahhb = new ActionHighlightHBar(this);
+		this.addMouseMotionListener(ahhb);
+		barsToMark = new ArrayList<HistogramBar>();
 	}
 	
 	public void setName(String name){
@@ -85,8 +102,12 @@ public class SimpleHistogramPanel extends JPanel{
 	public void setData(ArrayList<HistogramBar> d){
 		data = d;
 		max = getMax();
+		ahhb.setData(data);
 	}	
 
+	public ArrayList<HistogramBar> getData(){
+		return data;
+	}
 	private int getTotalEvents(){
 		return data.size();
 	}
@@ -95,6 +116,7 @@ public class SimpleHistogramPanel extends JPanel{
 	public void paintComponent(Graphics g) {
 
 		super.paintComponent(g);
+		gr = g;
 		int sizeX = this.getParent().getWidth();
 		int sizeY = this.getParent().getHeight();
 		
@@ -106,7 +128,7 @@ public class SimpleHistogramPanel extends JPanel{
 			int x = (int)(Math.ceil(sizeX/2 - txtWidth/2));
 			int y = txtHeight;
 			startY = defaultStartY + y;
-			g.drawString(histName, x, y);
+			gr.drawString(histName, x, y);
 		}
 
 		histWidth = sizeX-startX-10;
@@ -117,17 +139,17 @@ public class SimpleHistogramPanel extends JPanel{
 			histHeight = sizeY-startY*2;
 		}
 
-		drawOutsideBorders(g);
-		drawYMarks(g);
-		drawBars(g);
+		drawOutsideBorders();
+		drawYMarks();
+		drawBars();
 	}
 	
 
-	private void drawOutsideBorders(Graphics g){
-		g.drawRect(startX, startY, histWidth, histHeight);		
+	private void drawOutsideBorders(){
+		gr.drawRect(startX, startY, histWidth, histHeight);		
 	}
 
-	private void drawYMarks(Graphics g){
+	private void drawYMarks(){
 		if(data.size() > 0){
 			int yMax = max.getValue();
 			double yGap;
@@ -135,34 +157,56 @@ public class SimpleHistogramPanel extends JPanel{
 				yGap = histHeight/yMax;
 				
 				// Draw y-axis elements
-				for(int i = 0;i <= yMax;i++){
+				for(int i = 0;Math.pow(10, i)<= yMax;i++){
+					int mark = (int)(Math.pow(10, i));
 					int xYMark = startX-20;
-					int yYMark = (int)(startY+i*yGap+7);
+					int yYMark = (int)(startY+mark*yGap+7);
 					
 					// Draw numbers
-					g.drawString(String.valueOf(yMax - i), xYMark,yYMark);
+					gr.drawString(String.valueOf(yMax - mark), xYMark,yYMark);
 
 					// Draw small line at y-axis
-					g.drawLine(startX, yYMark-5, startX-2, yYMark-5);
+					gr.drawLine(startX, yYMark-5, startX-2, yYMark-5);
 					
 					// Draw gray line from y-axis to histogram end line
-					g.setColor(new Color(bgLines[0],bgLines[1],bgLines[2]));
-					g.drawLine(startX, yYMark-5,startX+histWidth,yYMark-5);
-					g.setColor(Color.black);
+					gr.setColor(new Color(bgLines[0],bgLines[1],bgLines[2]));
+					gr.drawLine(startX, yYMark-5,startX+histWidth,yYMark-5);
+					gr.setColor(Color.black);
+				}
+				
+				// Draw y-axis marks on selected bars
+				if(barsToMark.size() > 0){
+					Iterator<HistogramBar> iterator = barsToMark.iterator();
+					while(iterator.hasNext()){
+						HistogramBar b = iterator.next();
+						gr.drawLine(startX,b.getY(),b.getX(),b.getY());
+					}
 				}
 			}
 		}
 	}
 
-	private void drawXMarks(int x,int y,Graphics g){
-		g.drawLine(x, y, x, y+5);
-		g.setColor(new Color(bgLines[0],bgLines[1],bgLines[2]));
-		g.drawLine(x,y,x,y-histHeight);
-		g.setColor(Color.black);
+	private void drawXMarks(int x,int y){
+		gr.drawLine(x, y, x, y+5);
+		gr.setColor(new Color(bgLines[0],bgLines[1],bgLines[2]));
+		gr.drawLine(x,y,x,y-histHeight);
+		gr.setColor(Color.black);
 
 	}
+	
+	public void drawMark(HistogramBar b){
+		if(!barsToMark.contains(b))
+			barsToMark.add(b);
+		System.out.println(b.getName());
+	}
+	
+	public void dontDrawMark(HistogramBar b){
+		while(barsToMark.contains(b)){
+			barsToMark.remove(b);
+		}
+	}
 
-	private void drawBars(Graphics g){
+	private void drawBars(){
 		int totalEvents = getTotalEvents();
 		int xGap = (int)(Math.ceil(histWidth*0.05));
 		int yMax = getMax().getValue();
@@ -176,16 +220,16 @@ public class SimpleHistogramPanel extends JPanel{
 			for(int i=0;iterator.hasNext();i++){
 				e = iterator.next();
 				barHeight = (int)Math.ceil(histHeight*e.getValue()/yMax);			
-				drawBar(e,startX+i*barWidth+xGap,startY+histHeight-barHeight,barWidth,barHeight,g);
+				drawBar(e,startX+i*barWidth+xGap,startY+histHeight-barHeight,barWidth,barHeight);
 			}
 		}
 	}
 
-	private void drawBar(HistogramBar t,int x,int y,int width,int height,Graphics gr){
+	private void drawBar(HistogramBar t,int x,int y,int width,int height){
 		Color c = t.getColor();
 		Color barBorder = new Color(0,0,0);
 
-		drawXMarks((int)(Math.ceil(x + width/2)), y + height,gr);
+		drawXMarks((int)(Math.ceil(x + width/2)), y + height);
 		gr.setColor(c);
 		gr.fillRect(x, y, width, height);
 		gr.setColor(barBorder);
