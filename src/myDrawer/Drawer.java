@@ -25,7 +25,7 @@ public class Drawer {
 		h.addType(new Type("B8",19));
 		h.addType(new Type("B9",12));
 		h.addType(new Type("B10",5));
-		h.addType(new Type("Batata",10));
+		h.setBarNames(true);
 		jfrm.add(h.draw());
 		jfrm.setVisible(true);
 	}	

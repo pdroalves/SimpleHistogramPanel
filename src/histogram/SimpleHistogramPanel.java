@@ -33,8 +33,10 @@ public class SimpleHistogramPanel extends JPanel{
 	private int[] bgLines = {223,223,223};
 	private int histWidth;
 	private int histHeight;
-	private int startX = 50;
-	private int startY = 0;
+	private int defaultStartX = 50;
+	private int defaultStartY = 5;
+	private int startX = defaultStartX;
+	private int startY = defaultStartY;
 	private String histName;
 	Font defaultFont = new Font("Arial", Font.BOLD, 13);
 	private FontMetrics fm;
@@ -103,15 +105,16 @@ public class SimpleHistogramPanel extends JPanel{
 			int txtHeight = getFontMetrics().getHeight();
 			int x = (int)(Math.ceil(sizeX/2 - txtWidth/2));
 			int y = txtHeight;
-			startY = startY + y;
+			startY = defaultStartY + y;
 			g.drawString(histName, x, y);
 		}
 
 		histWidth = sizeX-startX-10;
-		histHeight = sizeY-startY*2;
 		
 		if(barNames){
-			histHeight =- 20;
+			histHeight = sizeY-startY*2 - 20;
+		}else{
+			histHeight = sizeY-startY*2;
 		}
 
 		drawOutsideBorders(g);
@@ -131,12 +134,18 @@ public class SimpleHistogramPanel extends JPanel{
 			if(yMax > 0){
 				yGap = histHeight/yMax;
 				
-				// Desenha marcadores a esquerda
+				// Draw y-axis elements
 				for(int i = 0;i <= yMax;i++){
 					int xYMark = startX-20;
 					int yYMark = (int)(startY+i*yGap+7);
+					
+					// Draw numbers
 					g.drawString(String.valueOf(yMax - i), xYMark,yYMark);
+
+					// Draw small line at y-axis
 					g.drawLine(startX, yYMark-5, startX-2, yYMark-5);
+					
+					// Draw gray line from y-axis to histogram end line
 					g.setColor(new Color(bgLines[0],bgLines[1],bgLines[2]));
 					g.drawLine(startX, yYMark-5,startX+histWidth,yYMark-5);
 					g.setColor(Color.black);
@@ -182,7 +191,12 @@ public class SimpleHistogramPanel extends JPanel{
 		gr.setColor(barBorder);
 		gr.drawRect(x, y, width, height);
 		if(barNames){
-			gr.drawString(t.getName(), (int)(Math.ceil(x + width/3)), y+height+20);
+			setFontMetrics(getFontMetrics(defaultFont));
+			int txtWidth = getFontMetrics().stringWidth(t.getName());
+			int txtHeight = getFontMetrics().getHeight();
+			int xName = (int)(Math.ceil(x + width/2 - txtWidth/2));
+			int yName = y+height + txtHeight;	
+			gr.drawString(t.getName(), xName, yName);
 		}
 		t.setX(x);
 		t.setY(y);
