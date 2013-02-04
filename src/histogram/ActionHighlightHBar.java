@@ -49,7 +49,10 @@ public class ActionHighlightHBar implements MouseMotionListener {
 					mouseY >= y1 && 
 					mouseY <= y2){
 				shp.drawMark(b);
+			}else{
+				shp.dontDrawMark(b);
 			}
 		}
+		
 	}	
 }

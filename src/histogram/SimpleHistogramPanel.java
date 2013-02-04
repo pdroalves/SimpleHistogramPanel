@@ -155,15 +155,16 @@ public class SimpleHistogramPanel extends JPanel{
 			double yGap;
 			if(yMax > 0){
 				yGap = histHeight/yMax;
+				int maxP = (int)(Math.ceil(Math.log10(yMax)));
 				
 				// Draw y-axis elements
-				for(int i = 0;Math.pow(10, i)<= yMax;i++){
-					int mark = (int)(Math.pow(10, i));
+				for(int i = maxP;i >= 0;i--){
+					int mark = (int)(Math.pow(10, maxP-i));
 					int xYMark = startX-20;
 					int yYMark = (int)(startY+mark*yGap+7);
 					
 					// Draw numbers
-					gr.drawString(String.valueOf(yMax - mark), xYMark,yYMark);
+					//gr.drawString(String.valueOf((int)(yMax - Math.pow(10, mark))), xYMark,yYMark);
 
 					// Draw small line at y-axis
 					gr.drawLine(startX, yYMark-5, startX-2, yYMark-5);
@@ -180,6 +181,9 @@ public class SimpleHistogramPanel extends JPanel{
 					while(iterator.hasNext()){
 						HistogramBar b = iterator.next();
 						gr.drawLine(startX,b.getY(),b.getX(),b.getY());
+						
+						// Draw numbers
+						gr.drawString(String.valueOf(b.getValue()), startX-20,b.getY());
 					}
 				}
 			}
@@ -198,6 +202,7 @@ public class SimpleHistogramPanel extends JPanel{
 		if(!barsToMark.contains(b))
 			barsToMark.add(b);
 		System.out.println(b.getName());
+		this.repaint();
 	}
 	
 	public void dontDrawMark(HistogramBar b){
