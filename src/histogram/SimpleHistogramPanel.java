@@ -43,6 +43,10 @@ public class SimpleHistogramPanel extends JPanel{
 	private ActionHighlightHBar ahhb;
 	private Graphics gr;
 	private ArrayList<HistogramBar> barsToMark;
+	private int histMax = 0;
+	private int histMin = 0;
+	private int minBarHeight = 1;
+	private boolean linearize = false;
 	
 	public SimpleHistogramPanel(){
 		super();
@@ -74,6 +78,10 @@ public class SimpleHistogramPanel extends JPanel{
 		barsToMark = new ArrayList<HistogramBar>();
 	}
 	
+	public void enableLinearize(boolean b){
+		linearize = b;
+	}
+	
 	public void setName(String name){
 		histName = name;
 	}
@@ -97,6 +105,19 @@ public class SimpleHistogramPanel extends JPanel{
 			}
 		}
 		return max;
+	}
+	
+	private HistogramBar getMin(){
+		Iterator<HistogramBar> iterator = data.iterator();
+		HistogramBar min = data.get(0);
+
+		while(iterator.hasNext()){
+			HistogramBar e = iterator.next();
+			if(e.getValue() < min.getValue()){
+				min = e;
+			}
+		}
+		return min;
 	}
 	
 	public void setData(ArrayList<HistogramBar> d){
@@ -152,27 +173,32 @@ public class SimpleHistogramPanel extends JPanel{
 	private void drawYMarks(){
 		if(data.size() > 0){
 			int yMax = max.getValue();
-			double yGap;
+			int maxP = 0;
+			double yGap = 0;
+			
 			if(yMax > 0){
-				yGap = histHeight/yMax;
-				int maxP = (int)(Math.ceil(Math.log10(yMax)));
-				
+				int up = 0;
+				setHistMin(0);
 				// Draw y-axis elements
-				for(int i = maxP;i >= 0;i--){
-					int mark = (int)(Math.pow(10, maxP-i));
-					int xYMark = startX-20;
-					int yYMark = (int)(startY+mark*yGap+7);
-					
-					// Draw numbers
-					//gr.drawString(String.valueOf((int)(yMax - Math.pow(10, mark))), xYMark,yYMark);
-
-					// Draw small line at y-axis
-					gr.drawLine(startX, yYMark-5, startX-2, yYMark-5);
-					
-					// Draw gray line from y-axis to histogram end line
-					gr.setColor(new Color(bgLines[0],bgLines[1],bgLines[2]));
-					gr.drawLine(startX, yYMark-5,startX+histWidth,yYMark-5);
-					gr.setColor(Color.black);
+				if(linearize){
+					maxP = (int)(Math.ceil(Math.log10(yMax)));
+					setHistMax((int)(Math.pow(10, maxP)));
+					yGap = histHeight/maxP;
+					for(int i = maxP;i >= 0;i--){
+						int mark = (int)(Math.pow(10, maxP-i));
+						if(mark == 1) 
+							mark = 0;
+						drawOrdinaryMark(mark,up*yGap);
+						up++;
+					}
+				}else{
+					setHistMax((int)(yMax*1.1));
+					// Max
+					drawOrdinaryMark(getHistMax(),histHeight);
+					// Min
+					drawOrdinaryMark(getHistMin(),0);
+					// Middle
+					drawOrdinaryMark((int)((getHistMax()-getHistMin())/2),(int)(histHeight/2));				
 				}
 				
 				// Draw y-axis marks on selected bars
@@ -189,6 +215,22 @@ public class SimpleHistogramPanel extends JPanel{
 			}
 		}
 	}
+	
+	private void drawOrdinaryMark(int mark,double gap){
+		int xYMark = startX-20;
+		int yYMark = (int)(startY+histHeight-gap+7);
+		
+		// Draw numbers
+		gr.drawString(String.valueOf(mark), xYMark,yYMark);
+
+		// Draw small line at y-axis
+		gr.drawLine(startX, yYMark-5, startX-2, yYMark-5);
+		
+		// Draw gray line from y-axis to histogram end line
+		gr.setColor(new Color(bgLines[0],bgLines[1],bgLines[2]));
+		gr.drawLine(startX, yYMark-5,startX+histWidth,yYMark-5);
+		gr.setColor(Color.black);
+	}
 
 	private void drawXMarks(int x,int y){
 		gr.drawLine(x, y, x, y+5);
@@ -201,13 +243,13 @@ public class SimpleHistogramPanel extends JPanel{
 	public void drawMark(HistogramBar b){
 		if(!barsToMark.contains(b))
 			barsToMark.add(b);
-		System.out.println(b.getName());
 		this.repaint();
 	}
 	
 	public void dontDrawMark(HistogramBar b){
 		while(barsToMark.contains(b)){
 			barsToMark.remove(b);
+			this.repaint();
 		}
 	}
 
@@ -224,7 +266,13 @@ public class SimpleHistogramPanel extends JPanel{
 			// Desenha barras
 			for(int i=0;iterator.hasNext();i++){
 				e = iterator.next();
-				barHeight = (int)Math.ceil(histHeight*e.getValue()/yMax);			
+				if(linearize){
+					barHeight = (int)Math.ceil(histHeight*Math.log10(e.getValue())/Math.log10(getHistMax()));	
+				}else{
+					barHeight = (int)Math.ceil(histHeight*e.getValue()/(float)(getHistMax()));	
+				}
+				if(barHeight < minBarHeight)
+					barHeight = minBarHeight;
 				drawBar(e,startX+i*barWidth+xGap,startY+histHeight-barHeight,barWidth,barHeight);
 			}
 		}
@@ -261,5 +309,20 @@ public class SimpleHistogramPanel extends JPanel{
 		this.fm = fm;
 	}
 
+	private int getHistMax() {
+		return histMax;
+	}
+
+	private void setHistMax(int histMax) {
+		this.histMax = histMax;
+	}
+
+	private int getHistMin() {
+		return histMin;
+	}
+
+	private void setHistMin(int histMin) {
+		this.histMin = histMin;
+	}
 
 }
