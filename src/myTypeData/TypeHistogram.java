@@ -15,6 +15,7 @@ public class TypeHistogram {
 
     public TypeHistogram() {
         dp = new SimpleHistogramPanel("My histogram");
+       // dp.setBarNames(true);
         dp.setBackground(new Color(255, 255, 255));
         dp.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         setData(new ArrayList<Type>());
