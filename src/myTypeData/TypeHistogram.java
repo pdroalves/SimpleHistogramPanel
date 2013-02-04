@@ -35,6 +35,10 @@ public class TypeHistogram {
     	return dp;
     }
     
+    public void enableLinearize(boolean b){
+    	dp.enableLinearize(b);
+    }
+    
     private void calcRelativeFreq(){
 		Iterator<Type> iterator = getData().iterator();
 		int total = 0;

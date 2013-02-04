@@ -221,7 +221,12 @@ public class SimpleHistogramPanel extends JPanel{
 		int yYMark = (int)(startY+histHeight-gap+7);
 		
 		// Draw numbers
-		gr.drawString(String.valueOf(mark), xYMark,yYMark);
+		setFontMetrics(getFontMetrics(defaultFont));
+		int txtWidth = getFontMetrics().stringWidth(String.valueOf(mark));
+		int txtHeight = getFontMetrics().getHeight();
+		int x = (int)(Math.ceil(xYMark - txtWidth/2));
+		int y = yYMark;
+		gr.drawString(String.valueOf(mark), x,y);
 
 		// Draw small line at y-axis
 		gr.drawLine(startX, yYMark-5, startX-2, yYMark-5);

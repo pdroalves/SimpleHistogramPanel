@@ -28,6 +28,7 @@ public class Drawer {
 		h.addType(new Type("B11",3));
 		h.addType(new Type("B12",75));
 		h.setBarNames(true);
+		h.enableLinearize(true);
 		jfrm.add(h.draw());
 		jfrm.setVisible(true);
 	}	
