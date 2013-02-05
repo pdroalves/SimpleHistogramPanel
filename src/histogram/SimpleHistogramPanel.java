@@ -46,6 +46,8 @@ public class SimpleHistogramPanel extends JPanel{
 	private int histMax = 0;
 	private int histMin = 0;
 	private int minBarHeight = 1;
+	private int minBarWidth = 1;
+	private int maxBarWidth = 100;	
 	private boolean linearize = false;
 	
 	public SimpleHistogramPanel(){
@@ -264,6 +266,10 @@ public class SimpleHistogramPanel extends JPanel{
 		int yMax = getMax().getValue();
 		if(yMax > 0){
 			int barWidth = (int)(Math.ceil((histWidth - xGap*2)/ totalEvents));
+			if(barWidth < getMinBarWidth())
+				barWidth = getMinBarWidth();
+			if(barWidth > getMaxBarWidth())
+				barWidth = getMaxBarWidth();
 			int barHeight = 0;
 			HistogramBar e;
 			Iterator<HistogramBar> iterator = data.iterator();
@@ -276,8 +282,8 @@ public class SimpleHistogramPanel extends JPanel{
 				}else{
 					barHeight = (int)Math.ceil(histHeight*e.getValue()/(float)(getHistMax()));	
 				}
-				if(barHeight < minBarHeight)
-					barHeight = minBarHeight;
+				if(barHeight < getMinBarHeight())
+					barHeight = getMinBarHeight();
 				drawBar(e,startX+i*barWidth+xGap,startY+histHeight-barHeight,barWidth,barHeight);
 			}
 		}
@@ -328,6 +334,30 @@ public class SimpleHistogramPanel extends JPanel{
 
 	private void setHistMin(int histMin) {
 		this.histMin = histMin;
+	}
+
+	public int getMaxBarWidth() {
+		return maxBarWidth;
+	}
+
+	public void setMaxBarWidth(int maxBarWidth) {
+		this.maxBarWidth = maxBarWidth;
+	}
+
+	public int getMinBarWidth() {
+		return minBarWidth;
+	}
+
+	public void setMinBarWidth(int minBarWidth) {
+		this.minBarWidth = minBarWidth;
+	}
+
+	private int getMinBarHeight() {
+		return minBarHeight;
+	}
+
+	private void setMinBarHeight(int minBarHeight) {
+		this.minBarHeight = minBarHeight;
 	}
 
 }
