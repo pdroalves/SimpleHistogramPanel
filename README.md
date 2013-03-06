@@ -3,7 +3,7 @@ SimpleHistogramPanel
 
 ![Example](/images/HistogramExample.png)
 
-SimpleHistogramPanel is a Java class that extends JPanel and draw a histogram using data on a ArrayList.
+SimpleHistogramPanel is a Java class that extends JPanel and draws a histogram using data on a ArrayList.
 
 How to use:
 -----------
