@@ -15,7 +15,7 @@ public class Drawer {
 		jfrm = new JFrame();
 		jfrm.setSize(width, height);
 		h = new TypeHistogram();
-		h.addType(new Type("B1",10));
+		/*h.addType(new Type("B1",10));
 		h.addType(new Type("B2",15));
 		h.addType(new Type("B3",7));
 		h.addType(new Type("B4",25));
@@ -26,7 +26,7 @@ public class Drawer {
 		h.addType(new Type("B9",12));
 		h.addType(new Type("B10",5));
 		h.addType(new Type("B11",3));
-		h.addType(new Type("B12",75));
+		h.addType(new Type("B12",75));*/
 		h.setBarNames(true);
 		h.enableLinearize(true);
 		jfrm.add(h.draw());
