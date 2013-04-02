@@ -150,8 +150,10 @@ public class SimpleHistogramPanel extends JPanel{
 
 		super.paintComponent(g);
 		gr = g;
-		int sizeX = this.getParent().getWidth();
-		int sizeY = this.getParent().getHeight();
+		/*int sizeX = this.getParent().getWidth();
+		int sizeY = this.getParent().getHeight();*/
+		int sizeX = this.getWidth();
+		int sizeY = this.getHeight();
 
 		// Paint histogram name
 		if(histName != null){
