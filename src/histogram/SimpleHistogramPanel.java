@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 public class SimpleHistogramPanel extends JPanel{
 
 	private ArrayList<HistogramBar> data;
-	private HistogramBar max;
+	private HistogramBar maxHistBar;
 	private boolean barNames = false;
 	private int[] bgLines = {223,223,223};
 	private int histWidth;
@@ -132,8 +132,10 @@ public class SimpleHistogramPanel extends JPanel{
 
 	public void setData(ArrayList<HistogramBar> d){
 		data = d;
-		max = getMax();
-		ahhb.setData(data);
+		if(data.size() > 0){
+			maxHistBar = getMax();
+			ahhb.setData(data);
+		}
 	}	
 
 	public ArrayList<HistogramBar> getData(){
@@ -171,8 +173,12 @@ public class SimpleHistogramPanel extends JPanel{
 		}
 
 		drawOutsideBorders();
-		drawYMarks();
-		drawBars();
+		if(data != null){
+			if(data.size() > 0){
+				drawYMarks();
+				drawBars();
+			}
+		}
 	}
 
 
@@ -181,8 +187,8 @@ public class SimpleHistogramPanel extends JPanel{
 	}
 
 	private void drawYMarks(){
-		if(data.size() > 0){
-			int yMax = max.getValue();
+		if(data.size() > 0 && maxHistBar != null){
+			int yMax = maxHistBar.getValue();
 			int maxP = 0;
 			double yGap = 0;
 
