@@ -44,6 +44,7 @@ public class SimpleHistogramPanel extends JPanel{
 	Font defaultFont = new Font("Arial", Font.BOLD, 13);
 	private FontMetrics fm;
 	private ActionHighlightHBar ahhb;
+	private ActionBarClickListener abcl;
 	private Graphics gr;
 	private ArrayList<HistogramBar> barsToMark;
 	private int histMax = 0;
@@ -56,7 +57,9 @@ public class SimpleHistogramPanel extends JPanel{
 	public SimpleHistogramPanel(){
 		super();
 		ahhb = new ActionHighlightHBar(this);
+		abcl = new ActionBarClickListener(this);
 		this.addMouseMotionListener(ahhb);
+		this.addMouseListener(abcl);
 		barsToMark = new ArrayList<HistogramBar>();
 	}
 
@@ -64,14 +67,18 @@ public class SimpleHistogramPanel extends JPanel{
 		super();
 		this.setPreferredSize(new Dimension(x,y));
 		ahhb = new ActionHighlightHBar(this);
+		abcl = new ActionBarClickListener(this);
 		this.addMouseMotionListener(ahhb);
+		this.addMouseListener(abcl);
 		barsToMark = new ArrayList<HistogramBar>();
 	}
 
 	public SimpleHistogramPanel(String name){
 		histName  = name;
 		ahhb = new ActionHighlightHBar(this);
+		abcl = new ActionBarClickListener(this);
 		this.addMouseMotionListener(ahhb);
+		this.addMouseListener(abcl);
 		barsToMark = new ArrayList<HistogramBar>();
 	}
 
@@ -79,7 +86,9 @@ public class SimpleHistogramPanel extends JPanel{
 		this.setPreferredSize(new Dimension(x,y));
 		histName  = name;
 		ahhb = new ActionHighlightHBar(this);
+		abcl = new ActionBarClickListener(this);
 		this.addMouseMotionListener(ahhb);
+		this.addMouseListener(abcl);
 		barsToMark = new ArrayList<HistogramBar>();
 	}
 
@@ -139,6 +148,7 @@ public class SimpleHistogramPanel extends JPanel{
 		if(data.size() > 0){
 			maxHistBar = getMax();
 			ahhb.setData(data);
+			abcl.setData(data);
 		}
 	}	
 
@@ -308,6 +318,11 @@ public class SimpleHistogramPanel extends JPanel{
 			this.repaint();
 		}
 	}
+	
+	public void barClicked(HistogramBar b){
+		// Called when a bar receives a mouse click
+		System.out.println("Bar click: "+b.getName());
+	}
 
 	private void drawBars(){
 		int totalEvents = getTotalEvents();
@@ -412,6 +427,10 @@ public class SimpleHistogramPanel extends JPanel{
 	@SuppressWarnings("unused")
 	private void setMinBarHeight(int minBarHeight) {
 		this.minBarHeight = minBarHeight;
+	}
+	
+	public ActionHighlightHBar getMouseListener(){
+		return ahhb;
 	}
 
 }
