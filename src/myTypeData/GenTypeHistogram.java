@@ -12,7 +12,8 @@ import javax.swing.border.BevelBorder;
 
 public class GenTypeHistogram {
     private SimpleHistogramPanel dp;
-    private ArrayList data;
+    @SuppressWarnings("rawtypes")
+	private ArrayList data;
 
     public GenTypeHistogram() {
         dp = new SimpleHistogramPanel("My histogram");
@@ -25,12 +26,14 @@ public class GenTypeHistogram {
     	dp.setBarNames(b);
     }
 
-    public void addType(GenType e) {
+    @SuppressWarnings("unchecked")
+	public void addType(GenType e) {
     	getData().add(e);
     	calcRelativeFreq();
     } 
     
-    
+
+    @SuppressWarnings("unchecked")
     public SimpleHistogramPanel getPanel(){
     	dp.setData(getData());
     	return dp;
@@ -39,7 +42,8 @@ public class GenTypeHistogram {
     public void enableLinearize(boolean b){
     	dp.enableLinearize(b);
     }
-    
+
+    @SuppressWarnings("unchecked")
     private void calcRelativeFreq(){
 		Iterator<GenType> iterator = getData().iterator();
 		int total = 0;
@@ -59,10 +63,12 @@ public class GenTypeHistogram {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public ArrayList getData() {
 		return data;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void setData(ArrayList data) {
 		this.data = data;
 	}

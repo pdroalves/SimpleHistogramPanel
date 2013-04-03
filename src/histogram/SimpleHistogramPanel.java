@@ -22,11 +22,14 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 import javax.swing.JPanel;
 
 public class SimpleHistogramPanel extends JPanel{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<HistogramBar> data;
 	private HistogramBar maxHistBar;
 	private boolean barNames = false;
@@ -113,6 +116,7 @@ public class SimpleHistogramPanel extends JPanel{
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private HistogramBar getMin(){
 		Iterator<HistogramBar> iterator = data.iterator();
 		if(data.size() > 0){
@@ -179,6 +183,7 @@ public class SimpleHistogramPanel extends JPanel{
 			if(data.size() > 0){
 				drawYMarks();
 				drawBars();
+				drawYBarMarks();
 			}
 		}
 	}
@@ -186,6 +191,20 @@ public class SimpleHistogramPanel extends JPanel{
 
 	private void drawOutsideBorders(){
 		gr.drawRect(startX, startY, histWidth, histHeight);		
+	}
+	
+	private void drawYBarMarks(){
+		// Draw y-axis marks on selected bars
+		if(barsToMark.size() > 0){
+			Iterator<HistogramBar> iterator = barsToMark.iterator();
+			while(iterator.hasNext()){
+				HistogramBar b = iterator.next();
+				gr.drawLine(startX,b.getY(),b.getX(),b.getY());
+
+				// Draw numbers
+				gr.drawString(String.valueOf(b.getValue()), startX-20,b.getY());
+			}
+		}
 	}
 
 	private void drawYMarks(){
@@ -207,6 +226,11 @@ public class SimpleHistogramPanel extends JPanel{
 					drawYNumbersMark((int)(Math.pow(10, maxP/2)),yGap*(int)(maxP/2));
 					// Max
 					drawYNumbersMark((int)(Math.pow(10, maxP)),yGap*maxP);	
+					
+					// draw other marks but without numbers
+					for(int up = 0;up < maxP;up++){
+						drawYWithoutNumbersMark(yGap*up);
+					}
 				}else{
 					setHistMax((int)(yMax*1.1));
 					// Max
@@ -215,18 +239,6 @@ public class SimpleHistogramPanel extends JPanel{
 					drawYNumbersMark(getHistMin(),0);
 					// Middle
 					drawYNumbersMark((int)((getHistMax()-getHistMin())/2),(int)(histHeight/2));				
-				}
-
-				// Draw y-axis marks on selected bars
-				if(barsToMark.size() > 0){
-					Iterator<HistogramBar> iterator = barsToMark.iterator();
-					while(iterator.hasNext()){
-						HistogramBar b = iterator.next();
-						gr.drawLine(startX,b.getY(),b.getX(),b.getY());
-
-						// Draw numbers
-						gr.drawString(String.valueOf(b.getValue()), startX-20,b.getY());
-					}
 				}
 			}
 		}
@@ -244,13 +256,27 @@ public class SimpleHistogramPanel extends JPanel{
 		else
 			str = Integer.toString(mark);
 		int txtWidth = getFontMetrics().stringWidth(str);
-		int txtHeight = getFontMetrics().getHeight();
+		//int txtHeight = getFontMetrics().getHeight();
 		
 		int x = (int)(Math.ceil(xYMark - txtWidth - defaultStartX));
 		int y = yYMark;
 		
 		gr.setColor(new Color(190,190,190));
 		gr.drawString(String.valueOf(str), x,y);
+
+		// Draw small line at y-axis
+		gr.setColor(Color.black);
+		gr.drawLine(xYMark, yYMark-5, xYMark-2, yYMark-5);
+
+		// Draw gray line from y-axis to histogram end line
+		gr.setColor(new Color(bgLines[0],bgLines[1],bgLines[2]));
+		gr.drawLine(startX, yYMark-5,startX+histWidth,yYMark-5);
+		gr.setColor(Color.black);
+	}	
+	
+	private void drawYWithoutNumbersMark(double gap){
+		int xYMark = startX;
+		int yYMark = (int)(startY+histHeight-gap+7);
 
 		// Draw small line at y-axis
 		gr.setColor(Color.black);
@@ -285,12 +311,13 @@ public class SimpleHistogramPanel extends JPanel{
 
 	private void drawBars(){
 		int totalEvents = getTotalEvents();
-		int xGap = (int)(Math.ceil(histWidth*0.05));
+		int xGap = (int)(Math.ceil(histWidth*0.005));
+		int startXPos = startX + 3*xGap;
 		HistogramBar histMax = getMax();
 		if(histMax != null){
 			int yMax = histMax.getValue();
 			if(yMax > 0){
-				int barWidth = (int)(Math.ceil((histWidth - xGap*2)/ totalEvents));
+				int barWidth = (int)(Math.ceil((histWidth - xGap*totalEvents)/ totalEvents));
 				if(barWidth < getMinBarWidth())
 					barWidth = getMinBarWidth();
 				if(barWidth > getMaxBarWidth())
@@ -309,7 +336,7 @@ public class SimpleHistogramPanel extends JPanel{
 					}
 					if(barHeight < getMinBarHeight())
 						barHeight = getMinBarHeight();
-					drawBar(e,startX+i*barWidth+xGap,startY+histHeight-barHeight,barWidth,barHeight);
+					drawBar(e,startXPos+i*(barWidth+xGap),startY+histHeight-barHeight,barWidth,barHeight);
 				}
 			}
 		}
@@ -338,11 +365,11 @@ public class SimpleHistogramPanel extends JPanel{
 		t.setHeight(height);
 	}
 
-	public FontMetrics getFontMetrics() {
+	private FontMetrics getFontMetrics() {
 		return fm;
 	}
 
-	public void setFontMetrics(FontMetrics fm) {
+	private void setFontMetrics(FontMetrics fm) {
 		this.fm = fm;
 	}
 
@@ -382,6 +409,7 @@ public class SimpleHistogramPanel extends JPanel{
 		return minBarHeight;
 	}
 
+	@SuppressWarnings("unused")
 	private void setMinBarHeight(int minBarHeight) {
 		this.minBarHeight = minBarHeight;
 	}

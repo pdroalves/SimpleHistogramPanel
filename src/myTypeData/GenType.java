@@ -38,11 +38,11 @@ public class GenType extends HistogramBar{
 		super.setColor(c);
 	}
 	
-	public String getSeq(){
+	public String getTag(){
 		return seq;
 	}
 	
-	public void setSeq(String s){
+	public void setTag(String s){
 		seq = s;
 	}
 	
@@ -81,12 +81,12 @@ public class GenType extends HistogramBar{
 	
 	@Override
 	public String getName(){
-		return getSeq();
+		return getTag();
 	}
 	
 	@Override
 	public void setName(String n) {
-		setSeq(n);
+		setTag(n);
 	}
 
 	@Override
