@@ -33,7 +33,7 @@ public class SimpleHistogramPanel extends JPanel{
 	private int[] bgLines = {223,223,223};
 	private int histWidth;
 	private int histHeight;
-	private int defaultStartX = 50;
+	private int defaultStartX = 15;
 	private int defaultStartY = 5;
 	private int startX = defaultStartX;
 	private int startY = defaultStartY;
@@ -150,14 +150,12 @@ public class SimpleHistogramPanel extends JPanel{
 
 		super.paintComponent(g);
 		gr = g;
-		/*int sizeX = this.getParent().getWidth();
-		int sizeY = this.getParent().getHeight();*/
 		int sizeX = this.getWidth();
 		int sizeY = this.getHeight();
-
+		setFontMetrics(getFontMetrics(defaultFont));
+		
 		// Paint histogram name
 		if(histName != null){
-			setFontMetrics(getFontMetrics(defaultFont));
 			int txtWidth = getFontMetrics().stringWidth(histName);
 			int txtHeight = getFontMetrics().getHeight();
 			int x = (int)(Math.ceil(sizeX/2 - txtWidth/2));
@@ -167,7 +165,9 @@ public class SimpleHistogramPanel extends JPanel{
 		}
 
 		histWidth = sizeX-startX-10;
-
+		int maxP = (int)(Math.ceil(Math.log10(maxHistBar.getValue())));
+		startX = defaultStartX + getFontMetrics().stringWidth(String.format("%.1e", Math.pow(10, maxP)));
+		
 		if(barNames){
 			histHeight = sizeY-startY*2 - 20;
 		}else{
@@ -195,20 +195,18 @@ public class SimpleHistogramPanel extends JPanel{
 			double yGap = 0;
 
 			if(yMax > 0){
-				int up = 0;
 				setHistMin(0);
 				// Draw y-axis elements
 				if(linearize){
 					maxP = (int)(Math.ceil(Math.log10(yMax)));
 					setHistMax((int)(Math.pow(10, maxP)));
 					yGap = histHeight/maxP;
-					for(int i = maxP;i >= 0;i--){
-						int mark = (int)(Math.pow(10, maxP-i));
-						if(mark == 1) 
-							mark = 0;
-						drawOrdinaryMark(mark,up*yGap);
-						up++;
-					}
+					// Origin
+					drawOrdinaryMark(0,0);
+					// Middle
+					drawOrdinaryMark((int)(Math.pow(10, maxP/2)),yGap*(int)(maxP/2));
+					// Max
+					drawOrdinaryMark((int)(Math.pow(10, maxP)),yGap*maxP);	
 				}else{
 					setHistMax((int)(yMax*1.1));
 					// Max
@@ -235,18 +233,25 @@ public class SimpleHistogramPanel extends JPanel{
 	}
 
 	private void drawOrdinaryMark(int mark,double gap){
-		int xYMark = startX-20;
+		int xYMark = startX;
 		int yYMark = (int)(startY+histHeight-gap+7);
 
 		// Draw numbers
 		setFontMetrics(getFontMetrics(defaultFont));
-		int txtWidth = getFontMetrics().stringWidth(String.valueOf(mark));
+		String str;
+		if(mark >= 10000)
+			str = String.format("%.1e", (double)mark);
+		else
+			str = Integer.toString(mark);
+		int txtWidth = getFontMetrics().stringWidth(str);
 		int txtHeight = getFontMetrics().getHeight();
-		int x = (int)(Math.ceil(xYMark - txtWidth/2));
+		int x = (int)(Math.ceil(xYMark - txtWidth));
 		int y = yYMark;
-		gr.drawString(String.valueOf(mark), x,y);
+		gr.setColor(new Color(190,190,190));
+		gr.drawString(String.valueOf(str), x,y);
 
 		// Draw small line at y-axis
+		gr.setColor(Color.black);
 		gr.drawLine(startX, yYMark-5, startX-2, yYMark-5);
 
 		// Draw gray line from y-axis to histogram end line
