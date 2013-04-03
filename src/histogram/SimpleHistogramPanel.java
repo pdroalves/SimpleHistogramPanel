@@ -202,19 +202,19 @@ public class SimpleHistogramPanel extends JPanel{
 					setHistMax((int)(Math.pow(10, maxP)));
 					yGap = histHeight/maxP;
 					// Origin
-					drawOrdinaryMark(0,0);
+					drawYNumbersMark(0,0);
 					// Middle
-					drawOrdinaryMark((int)(Math.pow(10, maxP/2)),yGap*(int)(maxP/2));
+					drawYNumbersMark((int)(Math.pow(10, maxP/2)),yGap*(int)(maxP/2));
 					// Max
-					drawOrdinaryMark((int)(Math.pow(10, maxP)),yGap*maxP);	
+					drawYNumbersMark((int)(Math.pow(10, maxP)),yGap*maxP);	
 				}else{
 					setHistMax((int)(yMax*1.1));
 					// Max
-					drawOrdinaryMark(getHistMax(),histHeight);
+					drawYNumbersMark(getHistMax(),histHeight);
 					// Min
-					drawOrdinaryMark(getHistMin(),0);
+					drawYNumbersMark(getHistMin(),0);
 					// Middle
-					drawOrdinaryMark((int)((getHistMax()-getHistMin())/2),(int)(histHeight/2));				
+					drawYNumbersMark((int)((getHistMax()-getHistMin())/2),(int)(histHeight/2));				
 				}
 
 				// Draw y-axis marks on selected bars
@@ -232,7 +232,7 @@ public class SimpleHistogramPanel extends JPanel{
 		}
 	}
 
-	private void drawOrdinaryMark(int mark,double gap){
+	private void drawYNumbersMark(int mark,double gap){
 		int xYMark = startX;
 		int yYMark = (int)(startY+histHeight-gap+7);
 
@@ -245,14 +245,16 @@ public class SimpleHistogramPanel extends JPanel{
 			str = Integer.toString(mark);
 		int txtWidth = getFontMetrics().stringWidth(str);
 		int txtHeight = getFontMetrics().getHeight();
-		int x = (int)(Math.ceil(xYMark - txtWidth));
+		
+		int x = (int)(Math.ceil(xYMark - txtWidth - defaultStartX));
 		int y = yYMark;
+		
 		gr.setColor(new Color(190,190,190));
 		gr.drawString(String.valueOf(str), x,y);
 
 		// Draw small line at y-axis
 		gr.setColor(Color.black);
-		gr.drawLine(startX, yYMark-5, startX-2, yYMark-5);
+		gr.drawLine(xYMark, yYMark-5, xYMark-2, yYMark-5);
 
 		// Draw gray line from y-axis to histogram end line
 		gr.setColor(new Color(bgLines[0],bgLines[1],bgLines[2]));
