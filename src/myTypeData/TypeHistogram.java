@@ -11,7 +11,8 @@ import javax.swing.border.BevelBorder;
 
 public class TypeHistogram {
     private SimpleHistogramPanel dp;
-    private ArrayList data;
+    @SuppressWarnings("rawtypes")
+	private ArrayList data;
 
     public TypeHistogram() {
         dp = new SimpleHistogramPanel("My histogram");
@@ -24,13 +25,15 @@ public class TypeHistogram {
     	dp.setBarNames(b);
     }
 
-    public void addType(Type e) {
+    @SuppressWarnings("unchecked")
+	public void addType(Type e) {
     	getData().add(e);
     	calcRelativeFreq();
     } 
     
     
-    public SimpleHistogramPanel draw(){
+    @SuppressWarnings("unchecked")
+	public SimpleHistogramPanel draw(){
     	dp.setData(getData());
     	return dp;
     }
@@ -39,7 +42,8 @@ public class TypeHistogram {
     	dp.enableLinearize(b);
     }
     
-    private void calcRelativeFreq(){
+    @SuppressWarnings("unchecked")
+	private void calcRelativeFreq(){
 		Iterator<Type> iterator = getData().iterator();
 		int total = 0;
 		Type e;
@@ -58,10 +62,12 @@ public class TypeHistogram {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public ArrayList getData() {
 		return data;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void setData(ArrayList data) {
 		this.data = data;
 	}

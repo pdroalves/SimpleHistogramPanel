@@ -2,7 +2,6 @@ package myTypeData;
 import histogram.HistogramBar;
 
 import java.awt.Color;
-import java.util.Random;
 
 public class Type extends HistogramBar{
 	private String seq;
