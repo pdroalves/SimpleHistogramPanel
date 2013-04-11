@@ -270,8 +270,11 @@ public class SimpleHistogramPanel extends JPanel{
 		
 		int x = (int)(Math.ceil(xYMark - txtWidth - defaultStartX));
 		int y = yYMark;
-		
-		gr.setColor(new Color(190,190,190));
+		if(barsToMark.size() > 0){
+			gr.setColor(new Color(190,190,190));
+		}else{
+			gr.setColor(Color.BLACK);			
+		}
 		gr.drawString(String.valueOf(str), x,y);
 
 		// Draw small line at y-axis
