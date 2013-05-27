@@ -34,5 +34,5 @@ public class Drawer {
 		h.enableLinearize(true);
 		jfrm.add(h.getPanel());
 		jfrm.setVisible(true);
-	}	
+		}	
 }

@@ -229,7 +229,7 @@ public class SimpleHistogramPanel extends JPanel{
 				if(linearize){
 					maxP = (int)(Math.ceil(Math.log10(yMax)));
 					setHistMax((int)(Math.pow(10, maxP)));
-					yGap = histHeight/maxP;
+					yGap = histHeight/Math.max(1, maxP);
 					// Origin
 					drawYNumbersMark(0,0);
 					// Middle
@@ -434,6 +434,10 @@ public class SimpleHistogramPanel extends JPanel{
 	
 	public ActionHighlightHBar getMouseListener(){
 		return ahhb;
+	}
+	
+	public void clearAllBars(){
+		data.clear();
 	}
 
 }

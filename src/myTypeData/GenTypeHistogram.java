@@ -73,4 +73,7 @@ public class GenTypeHistogram {
 		this.data = data;
 	}
  
+	public void clear(){
+		dp.clearAllBars();
+	}
 } 
