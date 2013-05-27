@@ -167,7 +167,7 @@ public class SimpleHistogramPanel extends JPanel{
 		int sizeX = this.getWidth();
 		int sizeY = this.getHeight();
 		setFontMetrics(getFontMetrics(defaultFont));
-		
+
 		// Paint histogram name
 		if(histName != null){
 			int txtWidth = getFontMetrics().stringWidth(histName);
@@ -179,9 +179,12 @@ public class SimpleHistogramPanel extends JPanel{
 		}
 
 		histWidth = sizeX-startX-10;
-		int maxP = (int)(Math.ceil(Math.log10(maxHistBar.getValue())));
+		int maxP = 0;
+		if(maxHistBar != null)
+			maxP = (int)(Math.ceil(Math.log10(maxHistBar.getValue())));
+
 		startX = defaultStartX + getFontMetrics().stringWidth(String.format("%.1e", Math.pow(10, maxP)));
-		
+
 		if(barNames){
 			histHeight = sizeY-startY*2 - 20;
 		}else{
@@ -202,7 +205,7 @@ public class SimpleHistogramPanel extends JPanel{
 	private void drawOutsideBorders(){
 		gr.drawRect(startX, startY, histWidth, histHeight);		
 	}
-	
+
 	private void drawYBarMarks(){
 		// Draw y-axis marks on selected bars
 		if(barsToMark.size() > 0){
@@ -236,7 +239,7 @@ public class SimpleHistogramPanel extends JPanel{
 					drawYNumbersMark((int)(Math.pow(10, maxP/2)),yGap*(int)(maxP/2));
 					// Max
 					drawYNumbersMark((int)(Math.pow(10, maxP)),yGap*maxP);	
-					
+
 					// draw other marks but without numbers
 					for(int up = 0;up < maxP;up++){
 						drawYWithoutNumbersMark(yGap*up);
@@ -267,7 +270,7 @@ public class SimpleHistogramPanel extends JPanel{
 			str = Integer.toString(mark);
 		int txtWidth = getFontMetrics().stringWidth(str);
 		//int txtHeight = getFontMetrics().getHeight();
-		
+
 		int x = (int)(Math.ceil(xYMark - txtWidth - defaultStartX));
 		int y = yYMark;
 		if(barsToMark.size() > 0){
@@ -286,7 +289,7 @@ public class SimpleHistogramPanel extends JPanel{
 		gr.drawLine(startX, yYMark-5,startX+histWidth,yYMark-5);
 		gr.setColor(Color.black);
 	}	
-	
+
 	private void drawYWithoutNumbersMark(double gap){
 		int xYMark = startX;
 		int yYMark = (int)(startY+histHeight-gap+7);
@@ -321,7 +324,7 @@ public class SimpleHistogramPanel extends JPanel{
 			this.repaint();
 		}
 	}
-	
+
 	public void barClicked(HistogramBar b){
 		// Called when a bar receives a mouse click
 		System.out.println("Bar click: "+b.getName());
@@ -431,11 +434,11 @@ public class SimpleHistogramPanel extends JPanel{
 	private void setMinBarHeight(int minBarHeight) {
 		this.minBarHeight = minBarHeight;
 	}
-	
+
 	public ActionHighlightHBar getMouseListener(){
 		return ahhb;
 	}
-	
+
 	public void clearAllBars(){
 		if(data != null)
 			data.clear();
