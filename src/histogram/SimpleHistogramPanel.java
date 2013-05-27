@@ -437,7 +437,8 @@ public class SimpleHistogramPanel extends JPanel{
 	}
 	
 	public void clearAllBars(){
-		data.clear();
+		if(data != null)
+			data.clear();
 	}
 
 }
